@@ -20,6 +20,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const dontSniffMimetype = require("dont-sniff-mimetype");
 app.use(dontSniffMimetype());
 
+// use xssFilter. But this is deprecated. Instead of this, use xXssProtection().
+const xXssProtection = require("x-xss-protection");
+app.use(xXssProtection());
+
 //For FCC testing purposes and enables user to connect from outside the hosting platform
 app.use(cors({origin: '*'}));
 
