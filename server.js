@@ -24,6 +24,18 @@ app.use(dontSniffMimetype());
 const xXssProtection = require("x-xss-protection");
 app.use(xXssProtection());
 
+app.use(helmet.noCache())
+
+// use 'helmet-csp' instead of helmet.contentSecurityPolicy().
+const contentSecurityPolicy = require("helmet-csp");
+app.use(contentSecurityPolicy({
+  useDefaults: true,
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", 'trusted-cdn.com']
+  }
+}));
+
 //For FCC testing purposes and enables user to connect from outside the hosting platform
 app.use(cors({origin: '*'}));
 
