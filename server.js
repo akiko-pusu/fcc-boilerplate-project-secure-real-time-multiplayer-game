@@ -24,7 +24,9 @@ app.use(dontSniffMimetype());
 const xXssProtection = require("x-xss-protection");
 app.use(xXssProtection());
 
-app.use(helmet.noCache())
+app.use(helmet.noCache());
+
+app.use(helmet.hidePoweredBy())
 
 // use 'helmet-csp' instead of helmet.contentSecurityPolicy().
 const contentSecurityPolicy = require("helmet-csp");
@@ -38,6 +40,11 @@ app.use(contentSecurityPolicy({
 
 //For FCC testing purposes and enables user to connect from outside the hosting platform
 app.use(cors({origin: '*'}));
+
+app.use(function(req, res, next) {
+  res.setHeader("X-Powered-By", "PHP 7.4.3");
+  next();
+});
 
 // Index page (static HTML)
 app.route('/')
@@ -56,8 +63,6 @@ app.use(function(req, res, next) {
 });
 
 const portNum = process.env.PORT || 3000;
-
-app.use(helmet());
 
 // Set up server and tests
 const server = app.listen(portNum, () => {
