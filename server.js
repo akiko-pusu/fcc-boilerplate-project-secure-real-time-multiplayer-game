@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const expect = require('chai');
 const socket = require('socket.io');
 const cors = require('cors');
+const helmet = require('helmet');
 
 const fccTestingRoutes = require('./routes/fcctesting.js');
 const runner = require('./test-runner.js');
@@ -16,18 +17,21 @@ app.use('/assets', express.static(process.cwd() + '/assets'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const dontSniffMimetype = require("dont-sniff-mimetype");
+app.use(dontSniffMimetype());
+
 //For FCC testing purposes and enables user to connect from outside the hosting platform
-app.use(cors({origin: '*'})); 
+app.use(cors({origin: '*'}));
 
 // Index page (static HTML)
 app.route('/')
   .get(function (req, res) {
     res.sendFile(process.cwd() + '/views/index.html');
-  }); 
+  });
 
 //For FCC testing purposes
 fccTestingRoutes(app);
-    
+
 // 404 Not Found Middleware
 app.use(function(req, res, next) {
   res.status(404)
@@ -36,6 +40,8 @@ app.use(function(req, res, next) {
 });
 
 const portNum = process.env.PORT || 3000;
+
+app.use(helmet());
 
 // Set up server and tests
 const server = app.listen(portNum, () => {
